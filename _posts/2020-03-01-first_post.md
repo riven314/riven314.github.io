@@ -10,4 +10,4 @@ Writing LaTex equation in Microsoft Word and see if it can be translated into Ma
 
 Insert images in Microsoft Word and see if it works after pandoc conversion
 
-![](/images/2020-03-01-first_post/image1.png)
+![](/images/2020-03-01-first_post/media/image1.png)
