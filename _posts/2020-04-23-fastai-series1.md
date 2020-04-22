@@ -422,56 +422,6 @@ x_dec[0]
 
 We get the same result as the last session!
 
-### 4d. Represent Our Data by a Subclass
-Think about data item is an atomic unit of our dataset. It is usually represented by a tuple and you can have any types in your entry. An data item represent a sample of our dataset. It's the input of our transform function. It can come in many forms, e.g. image id, PIL.Image, dictionary ... etc.   
-By writing a subclass for our data item, we assign semantics to our sample. The advantage of doing so is that we could more conveniently inspect or visualize our sample.
-
-we can pass our matplotlib axes to the argument ```ctx``` in ```show_image``` function. In this way, we propate our plot of bounding boxes with text to ```show_image```.
-
-```python
-class BBoxImage(Tuple):    
-    def show(self, ctx = None, **kwargs):
-        img, bboxs, cls = self
-        fig, ax = plt.subplots(1)
-        for b, c in zip(bboxs, cls):
-            x, y, w, h = b
-            rect = patches.Rectangle((x, y), w, h, linewidth = 2, 
-                                     edgecolor = 'blue', facecolor = 'none')
-            ax.text(x, y - 1.5, c, color = 'w', 
-                    fontsize = 12, backgroundcolor = 'blue')
-            ax.add_patch(rect)
-        return show_image(img, ctx = ax, title = f'# bbox: {len(bboxs)}')
-```
-
-```python
-class COCOTransform(Transform):
-    def setups(self, src):
-        self.src = src
-        self.idx2obj, self.id2fn, self.id2bboxs = get_mappings(src)
-        vals = list(self.idx2obj.keys())
-        self.vocab, self.o2i = uniqueify(vals, sort = True, bidir = True)
-    
-    def encodes(self, img_id):
-        fn = self.id2fn[img_id]
-        img_path = src/'train'/fn
-        img = PILImage.create(img_path)
-        bbox_data = self.id2bboxs[img_id]
-        bboxs = [d['bbox'] + [self.o2i[d['category_id']]] for d in bbox_data]
-        return (TensorImage(img), tensor(bboxs))
-    
-    def decodes(self, x):
-        img, bboxs_cls = x
-        bboxs, cls = [], []
-        for b in bboxs_cls:
-            bbox, c = b[:4], b[4]
-            bbox, c = list(map(int, bbox)), int(c)
-            bboxs.append(bbox)
-            cls.append(self.idx2obj[self.vocab[c]])
-        return BBoxImage(img, bboxs, cls)
-```
-
-By doing so, not only could we reverse transform our data item to a more friendly form, we could also easily inspect and visualize our data item by using ```show``` method in our BBoxImage class.
-
 ### 5. Conclusion
 In this post, we have learnt how to write a subclass of ```Transform``` (and ```ItemTransform```) to process tiny COCO dataset. The data processing steps we have done in this post are far from the end, there are more steps we need to do on input data and targets before they are ready for feeding into an object detection model (e.g. permute tensor axis for input data, normalize input data, turning class index into a one-hot tensor in targets, grouping data as a batch ... etc.), but I hope at this point the post is enough to demonstrate how we could use ```Transform``` to process our dataset!
 
