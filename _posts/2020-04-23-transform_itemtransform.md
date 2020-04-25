@@ -2,7 +2,11 @@
 > summary
 
 
-## [fastai2 Series] ```Transform``` and ```ItemTransform``` Illustrated with Tiny COCO Dataset
+## [fastai2 Series] Illustrating ```Transform``` and ```ItemTransform``` with Tiny COCO Dataset
+
+
+#### ![title](/images/2020-04-23-transform_itemtransform/coco.png)
+
 fastai2 has been released for a while! For those readers who are new to fastai, it is a deep learning framework that wrap on top of PyTorch. The framework offers a bunch of out-of-box functionality, such as callbacks and learning rate finder, which helps deep learning users accelerate their experiments' cycle and make their codebase more readable. The framework and its community is under rapidly growth. fastai2 is one of their latest release. 
 
 Compared to version 1, fastai2 has undergone a rapid changes in low-level and mid-level API. Many new concepts have been introduced in fastai2. For example, classes such as ```Transform```, ```Pipeline```, ```TfmdLists```, ```Datasets``` and ```DataLoaders``` are introduced to handle data processing pipeline.
@@ -206,8 +210,6 @@ As a remark about category mapping, you will notice we have several category map
  On top of that, we also prepare a mapping ```self.o2i``` that tries to index each category integer (e.g. 0, 1, ..., 5). It maps each category integer to a category index. Such 0-based index would be more convenient to work with in modelling stage because the index will be expanded as a one-hot vector before feeding into model. On the other hand, ```self.o2i``` is used to convert an index back to a category integer. 
 
 ```python
-# bbox [x, y, w, h] need to be normalize
-
 class COCOTransform(Transform):
     def setups(self, src):
         self.src = src
@@ -219,7 +221,7 @@ class COCOTransform(Transform):
         fn = self.id2fn[img_id]
         img_path = src/'train'/fn
         bbox_data = self.id2bboxs[img_id]
-        bboxs = [d['bbox'] + [self.o2i[d['category_id']]] for d in bbox_data]
+        bboxs = [(d['bbox'], self.o2i[d['category_id']]) for d in bbox_data]
         return (PILImage.create(img_path), bboxs)
 ```
 
@@ -244,12 +246,12 @@ bboxs
 
 
 
-    [[32.52, 86.34, 8.53, 9.41, 0],
-     [98.12, 110.52, 1.95, 4.07, 5],
-     [91.28, 51.62, 3.95, 5.72, 5],
-     [110.48, 110.82, 14.55, 15.22, 0],
-     [96.63, 50.18, 18.67, 13.46, 0],
-     [0.69, 111.73, 11.8, 13.06, 0]]
+    [([32.52, 86.34, 8.53, 9.41], 0),
+     ([98.12, 110.52, 1.95, 4.07], 5),
+     ([91.28, 51.62, 3.95, 5.72], 5),
+     ([110.48, 110.82, 14.55, 15.22], 0),
+     ([96.63, 50.18, 18.67, 13.46], 0),
+     ([0.69, 111.73, 11.8, 13.06], 0)]
 
 
 
@@ -260,7 +262,7 @@ img
 
 
 
-![png](/images/2020-04-23-fastai-series1/output_21_0.png)
+![png](/images/2020-04-23-transform_itemtransform/output_23_0.png)
 
 
 
@@ -294,12 +296,12 @@ class COCOTransform(ItemTransform):
         fn = self.id2fn[img_id]
         img_path = src/'train'/fn
         bbox_data = self.id2bboxs[img_id]
-        bboxs = [d['bbox'] + [self.o2i[d['category_id']]] for d in bbox_data]
+        bboxs = [(d['bbox'], self.o2i[d['category_id']]) for d in bbox_data]
         return (PILImage.create(img_path), bboxs)
     
     def decodes(self, x):
         img, bboxs = x
-        bboxs = [[x0, y0, w, h, self.idx2obj[self.vocab[c]]] for x0, y0, w, h, c in bboxs]
+        bboxs = [(b, self.idx2obj[self.vocab[c]]) for b, c in bboxs]
         return (img, bboxs)
 ```
 
@@ -328,12 +330,12 @@ bboxs
 
 
 
-    [[32.52, 86.34, 8.53, 9.41, 'chair'],
-     [98.12, 110.52, 1.95, 4.07, 'vase'],
-     [91.28, 51.62, 3.95, 5.72, 'vase'],
-     [110.48, 110.82, 14.55, 15.22, 'chair'],
-     [96.63, 50.18, 18.67, 13.46, 'chair'],
-     [0.69, 111.73, 11.8, 13.06, 'chair']]
+    [([32.52, 86.34, 8.53, 9.41], 'chair'),
+     ([98.12, 110.52, 1.95, 4.07], 'vase'),
+     ([91.28, 51.62, 3.95, 5.72], 'vase'),
+     ([110.48, 110.82, 14.55, 15.22], 'chair'),
+     ([96.63, 50.18, 18.67, 13.46], 'chair'),
+     ([0.69, 111.73, 11.8, 13.06], 'chair')]
 
 
 
@@ -344,7 +346,7 @@ x_dec[0]
 
 
 
-![png](/images/2020-04-23-fastai-series1/output_27_0.png)
+![png](/images/2020-04-23-transform_itemtransform/output_29_0.png)
 
 
 
@@ -352,7 +354,7 @@ x_dec[0]
 
 One thing powerful about ```Transform``` (and ```ItemTransform```) is that it supports type dispatching. Type dispatching means the same function could have different behavior according to the type of the input. Such design feature occurs in other programming langugages, such as Julia, but it is not introduced in Python. By some means, ```Transform``` does get a hack to make such behavior work in Python. It is one of the major changes in fastai2 that kind of violate our usual understanding of Python behaviors, but at the same time enable us to make many tricks in data processing. We could magically inherit such type dispatching feaature by subclassing ```Transform```.
 
-Remember I mentioned in last session that ```Transform``` reads each individual entry of a ```tuple``` as an input of ```encodes``` and ```decodes```? When such feature is combined with type dispatching, we could do a lot of amazing tricks! Let's rewrite ```COCOTransform``` again, but this time we use ```Transform``` as base class and we apply type dispatching in ```decodes``` method.
+Remember I mentioned in last session that ```Transform``` reads each individual entry of a ```tuple``` as an input of ```encodes``` and ```decodes```? When such feature is combined with type dispatching, we could do a lot of amazing tricks! Let's rewrite ```COCOTransform``` again, but this time we use ```Transform``` as base class and we apply type dispatching in ```decodes``` method. Specifically, ```decodes``` gives discriminative behavior to image (```PILImage```) and bounding boxes (```list```). When bounding boxes are received, it decodes the category from an index to a name. When image is received, it returns the identity. 
 
 ```python
 class COCOTransform(Transform):
@@ -366,15 +368,15 @@ class COCOTransform(Transform):
         fn = self.id2fn[img_id]
         img_path = src/'train'/fn
         bbox_data = self.id2bboxs[img_id]
-        bboxs = [d['bbox'] + [self.o2i[d['category_id']]] for d in bbox_data]
+        bboxs = [(d['bbox'], self.o2i[d['category_id']]) for d in bbox_data]
         return (PILImage.create(img_path), bboxs)
     
     def decodes(self, x: PILImage):
         return x
     
     def decodes(self, x: list):
-        x = [[x0, y0, w, h, self.idx2obj[self.vocab[c]]] for x0, y0, w, h, c in x]
-        return x
+        bboxs = [(b, self.idx2obj[self.vocab[c]]) for b, c in x]
+        return bboxs
 ```
 
 ```python
@@ -400,12 +402,12 @@ bboxs
 
 
 
-    [[32.52, 86.34, 8.53, 9.41, 'chair'],
-     [98.12, 110.52, 1.95, 4.07, 'vase'],
-     [91.28, 51.62, 3.95, 5.72, 'vase'],
-     [110.48, 110.82, 14.55, 15.22, 'chair'],
-     [96.63, 50.18, 18.67, 13.46, 'chair'],
-     [0.69, 111.73, 11.8, 13.06, 'chair']]
+    [([32.52, 86.34, 8.53, 9.41], 'chair'),
+     ([98.12, 110.52, 1.95, 4.07], 'vase'),
+     ([91.28, 51.62, 3.95, 5.72], 'vase'),
+     ([110.48, 110.82, 14.55, 15.22], 'chair'),
+     ([96.63, 50.18, 18.67, 13.46], 'chair'),
+     ([0.69, 111.73, 11.8, 13.06], 'chair')]
 
 
 
@@ -416,11 +418,84 @@ x_dec[0]
 
 
 
-![png](/images/2020-04-23-fastai-series1/output_32_0.png)
+![png](/images/2020-04-23-transform_itemtransform/output_34_0.png)
 
 
 
-We get the same result as the last session!
+We get the same result as 4b! 
+
+One caveat is that you can actually skip writing ```def decodes(self, x: PILImage): ...``` because ```decodes``` implicitly assumes identify is returned.
+
+### 4d. Represent Our Data by a Subclass
+
+By creating a class for our data items (aka data points), we assign semantics to them. The advantage of doing so is that we could more conveniently inspect or visualize our sample. 
+
+We can do that by subclassing from ```Tuple``` and defining its ```show``` method. The method determines how our data items are displayed. Optionally, it accepts matplotlib axes as an argument (```ctx```) and propagate that to ```show_image```. Such setting enables us to optionally composite a plot by multiple layer of plots. 
+
+In our example, we represent our data items by ```BBoxImage``` and we show our image with bounding boxes and their labels by ```show``` method.
+
+```python
+class BBoxImage(Tuple):    
+    def show(self, ctx = None, **kwargs):
+        img, bboxs_data = self
+        bboxs, cls = zip(*bboxs_data)
+        fig, ax = plt.subplots(1)
+        for b, c in zip(bboxs, cls):
+            x, y, w, h = b
+            rect = patches.Rectangle((x, y), w, h, linewidth = 2, 
+                                     edgecolor = 'blue', facecolor = 'none')
+            ax.text(x, y - 1.5, c, color = 'w', 
+                    fontsize = 12, backgroundcolor = 'blue')
+            ax.add_patch(rect)
+        return show_image(img, ctx = ax, title = f'# bbox: {len(bboxs)}')
+```
+
+```python
+class COCOTransform(ItemTransform):
+    def setups(self, src):
+        self.src = src
+        self.idx2obj, self.id2fn, self.id2bboxs = get_mappings(src)
+        vals = list(self.idx2obj.keys())
+        self.vocab, self.o2i = uniqueify(vals, sort = True, bidir = True)
+    
+    def encodes(self, img_id):
+        fn = self.id2fn[img_id]
+        img_path = src/'train'/fn
+        bbox_data = self.id2bboxs[img_id]
+        bboxs = [(d['bbox'], self.o2i[d['category_id']]) for d in bbox_data]
+        return (PILImage.create(img_path), bboxs)
+    
+    def decodes(self, x):
+        img, bboxs = x
+        bboxs = [(b, self.idx2obj[self.vocab[c]]) for b, c in bboxs]
+        return BBoxImage(img, bboxs)
+```
+
+```python
+tfm = COCOTransform()
+tfm.setups(src)
+x_enc = tfm(img_ids[26])
+x_dec = tfm.decode(x_enc)
+img, bboxs = x_dec
+type(img), type(bboxs), len(bboxs)
+```
+
+
+
+
+    (fastai2.vision.core.PILImage, list, 4)
+
+
+
+```python
+x_dec.show();
+```
+
+
+![png](/images/2020-04-23-transform_itemtransform/output_40_0.png)
+
+
+By doing so, not only could we reverse transform our data item to a more friendly form, we could also easily inspect and visualize our data item as a whole. (i.e. image + bounding boxes + labels)
 
 ### 5. Conclusion
 In this post, we have learnt how to write a subclass of ```Transform``` (and ```ItemTransform```) to process tiny COCO dataset. The data processing steps we have done in this post are far from the end, there are more steps we need to do on input data and targets before they are ready for feeding into an object detection model (e.g. permute tensor axis for input data, normalize input data, turning class index into a one-hot tensor in targets, grouping data as a batch ... etc.), but I hope at this point the post is enough to demonstrate how we could use ```Transform``` to process our dataset!
