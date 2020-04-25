@@ -1,8 +1,4 @@
-# Title
-> summary
-
-
-## [fastai2 Series] Illustrating ```Transform``` and ```ItemTransform``` with Tiny COCO Dataset
+# [fastai2 Series] Illustrating ```Transform``` and ```ItemTransform``` with Tiny COCO Dataset
 
 
 #### ![title](/images/2020-04-23-transform_itemtransform/coco.png)
