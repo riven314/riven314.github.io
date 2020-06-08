@@ -6,9 +6,9 @@ Published in 2017, this paper is one of the highly cited work in the field. It h
 
 ## Problem Formulation
 
-The paper formulate the problem as learning a conditional language model. A conditional language model learns a probability distribution for a sequence of words. More formally, a conditional language model is to learn $P(w_1,...,w_n|c)=\prod^{n}_{t=1}P(w_t|w_1,...,w_{t-1},c)$, where $c$ is a vector of attributes where we want to control, and $w_i$ is the word at timestep $i$. In this work, they concatenate $c$ with the input vector in order to factor in the conditioning of attributes.
+The paper formulate the problem as learning a conditional language model. A conditional language model learns a probability distribution for a sequence of words. More formally, a conditional language model is to learn $P(w_1,...,w_n|c)=\prod^{n}_{t=1}P(w_t|w_1,...,w_{t-1},c)$ , where $c$ is a vector of attributes where we want to control, and $w_i$ is the word at timestep $i$. In this work, they concatenate $c$ with the input vector in order to factor in the conditioning of attributes.
 
-Compared with unconditional language model, where $P(w_1,...,w_n)=\prod^{n}_{t=1}P(w_t|w_1,...,w_{t-1})$, the difference is that it has an additional attribute vector on its conditional term. In addition, collecting training data for conditional language model is usually more expensive than that for unconditional language model because one has to manually annotate the corresponding attributes for each text.
+Compared with unconditional language model, where $P(w_1,...,w_n)=\prod^{n}_{t=1}P(w_t|w_1,...,w_{t-1})$ , the difference is that it has an additional attribute vector on its conditional term. In addition, collecting training data for conditional language model is usually more expensive than that for unconditional language model because one has to manually annotate the corresponding attributes for each text.
 
 The authors demonstrate their work with LSTM model on a movie review dataset and claim that the framework is generally applicable to any recurrent models. In fact, with the latest NLP advancement, we see that such conditional language model is also applicable to feed-forward model such as BERT and GPT-2 as well (see [this work](https://arxiv.org/pdf/1707.02633.pdf) for applying a similar framework on transformer model).  
 
@@ -25,34 +25,27 @@ The authors categorizes two types of stylistic properties they want to control o
 - properties related to content (e.g. sentiment and theme of the review sentence)
 
 The table below summarizes all the 6 stylistic properties they want to control. Note that the conditional language model could be conditioned on multiple properties at the same time: 
-
 </br></br>
 ![properties-list](/images/2020-06-09-Controling_Linguistic_Style_Aspects/attribute_table.JPG)
 </br></br>
 
 Their final dataset includes 2,773,435 review sentences with each sentence labeled with the 6 stylistic properties. The following chart summarizes the distribution of each stylistic properties:
-
 </br></br>
 ![properties-distribution](/images/2020-06-09-Controling_Linguistic_Style_Aspects/attribute_distribution.JPG)
 </br></br>
 
 ## Result
 
-It is tricky to evaluate text generation task. One common metrics is perplexity. It measures how well a language model is fitted to a test set (lower the perplexity the better). The work compares the pexplexity of their conditional language model against unconditional one ans show that it has a better fit than the unconditional one:
-
-</br></br>
+It is tricky to evaluate text generation task. One common metrics is perplexity. It measures how well a language model is fitted to a test set (lower the perplexity the better). The work compares the pexplexity of their conditional language model against unconditional one ans show that it has a better fit than the unconditional one:</br></br>
 <span style="display:block;text-align:center">
 ![perplexity](/images/2020-06-09-Controling_Linguistic_Style_Aspects/perplexity.JPG)
 </span>
 </br>
 
-Below is a snapshot of the generated reviews conditioned on a set of stylistic properties:
-
-</br></br>
+Below is a snapshot of the generated reviews conditioned on a set of stylistic properties:</br></br>
 <span style="display:block;text-align:center">
 ![generated](/images/2020-06-09-Controling_Linguistic_Style_Aspects/generated.JPG)
 </span>
-</br>
 
 ## Reference
 1. [Ficler, J., & Goldberg, Y. (2017). Controlling Linguistic Style Aspects in Neural Language Generation. In Proc. Workshop on Stylistic Variation, pp. 94–104](https://arxiv.org/pdf/1707.02633.pdf)
