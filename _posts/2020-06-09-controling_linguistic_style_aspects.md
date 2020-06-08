@@ -6,9 +6,9 @@ Published in 2017, this paper is one of the highly cited work in the field. It h
 
 ## Problem Formulation
 
-The paper formulate the problem as learning a conditional language model. A conditional language model learns a probability distribution for a sequence of words. More formally, a conditional language model is to learn $P(w_1,...,w_n|c)=\prod^{n}_{t=1}P(w_t|w_1,...,w_{t-1},c)$ , where $c$ is a vector of attributes where we want to control, and $w_i$ is the word at timestep $i$. In this work, they concatenate $c$ with the input vector in order to factor in the conditioning of attributes.
+The paper formulate the problem as learning a conditional language model. A conditional language model learns a probability distribution for a sequence of words. More formally, a conditional language model is to learn $P(w_1,...,w_n \mid c)=\prod^{n}_{t=1}P(w_t \mid w_1,...,w_{t-1},c)$ , where $c$ is a vector of attributes where we want to control, and $w_i$ is the word at timestep $i$. In this work, they concatenate $c$ with the input vector in order to factor in the conditioning of attributes.
 
-Compared with unconditional language model, where $P(w_1,...,w_n)=\prod^{n}_{t=1}P(w_t|w_1,...,w_{t-1})$ , the difference is that it has an additional attribute vector on its conditional term. In addition, collecting training data for conditional language model is usually more expensive than that for unconditional language model because one has to manually annotate the corresponding attributes for each text.
+Compared with unconditional language model, where $P(w_1,...,w_n)=\prod^{n}_{t=1}P(w_t \mid w_1,...,w_{t-1})$ , the difference is that it has an additional attribute vector on its conditional term. In addition, collecting training data for conditional language model is usually more expensive than that for unconditional language model because one has to manually annotate the corresponding attributes for each text.
 
 The authors demonstrate their work with LSTM model on a movie review dataset and claim that the framework is generally applicable to any recurrent models. In fact, with the latest NLP advancement, we see that such conditional language model is also applicable to feed-forward model such as BERT and GPT-2 as well (see [this work](https://arxiv.org/pdf/1707.02633.pdf) for applying a similar framework on transformer model).  
 
