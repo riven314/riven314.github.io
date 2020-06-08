@@ -25,27 +25,30 @@ The authors categorizes two types of stylistic properties they want to control o
 - properties related to content (e.g. sentiment and theme of the review sentence)
 
 The table below summarizes all the 6 stylistic properties they want to control. Note that the conditional language model could be conditioned on multiple properties at the same time: 
-</br></br>
+<br/><br/>
 ![properties-list](/images/2020-06-09-Controling_Linguistic_Style_Aspects/attribute_table.JPG)
-</br></br>
+<br/><br/>
 
 Their final dataset includes 2,773,435 review sentences with each sentence labeled with the 6 stylistic properties. The following chart summarizes the distribution of each stylistic properties:
-</br></br>
+<br/><br/>
 ![properties-distribution](/images/2020-06-09-Controling_Linguistic_Style_Aspects/attribute_distribution.JPG)
-</br></br>
+<br/><br/>
 
 ## Result
 
-It is tricky to evaluate text generation task. One common metrics is perplexity. It measures how well a language model is fitted to a test set (lower the perplexity the better). The work compares the pexplexity of their conditional language model against unconditional one ans show that it has a better fit than the unconditional one:</br></br>
+It is tricky to evaluate text generation task. One common metrics is perplexity. It measures how well a language model is fitted to a test set (lower the perplexity the better). The work compares the pexplexity of their conditional language model against unconditional one ans show that it has a better fit than the unconditional one:
+<br/><br/>
 <span style="display:block;text-align:center">
 ![perplexity](/images/2020-06-09-Controling_Linguistic_Style_Aspects/perplexity.JPG)
 </span>
-</br>
+<br/>
 
-Below is a snapshot of the generated reviews conditioned on a set of stylistic properties:</br></br>
+Below is a snapshot of the generated reviews conditioned on a set of stylistic properties:
+<br/><br/>
 <span style="display:block;text-align:center">
 ![generated](/images/2020-06-09-Controling_Linguistic_Style_Aspects/generated.JPG)
 </span>
+<br/>
 
 ## Reference
 1. [Ficler, J., & Goldberg, Y. (2017). Controlling Linguistic Style Aspects in Neural Language Generation. In Proc. Workshop on Stylistic Variation, pp. 94–104](https://arxiv.org/pdf/1707.02633.pdf)
