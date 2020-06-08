@@ -27,13 +27,13 @@ The authors categorizes two types of stylistic properties they want to control o
 The table below summarizes all the 6 stylistic properties they want to control. Note that the conditional language model could be conditioned on multiple properties at the same time: 
 
 </br></br>
-![properties-list](/images/2020-06-09-Controling_Linguistic_Style_Aspects/attribute_table.jpg)
+![properties-list](/images/2020-06-09-Controling_Linguistic_Style_Aspects/attribute_table.JPG)
 </br></br>
 
 Their final dataset includes 2,773,435 review sentences with each sentence labeled with the 6 stylistic properties. The following chart summarizes the distribution of each stylistic properties:
 
 </br></br>
-![properties-distribution](/images/2020-06-09-Controling_Linguistic_Style_Aspects/attribute_distribution.jpg)
+![properties-distribution](/images/2020-06-09-Controling_Linguistic_Style_Aspects/attribute_distribution.JPG)
 </br></br>
 
 ## Result
@@ -42,7 +42,7 @@ It is tricky to evaluate text generation task. One common metrics is perplexity.
 
 </br></br>
 <span style="display:block;text-align:center">
-![perplexity](/images/2020-06-09-Controling_Linguistic_Style_Aspects/perplexity.jpg)
+![perplexity](/images/2020-06-09-Controling_Linguistic_Style_Aspects/perplexity.JPG)
 </span>
 </br>
 
@@ -50,7 +50,7 @@ Below is a snapshot of the generated reviews conditioned on a set of stylistic p
 
 </br></br>
 <span style="display:block;text-align:center">
-![generated](/images/2020-06-09-Controling_Linguistic_Style_Aspects/generated.jpg)
+![generated](/images/2020-06-09-Controling_Linguistic_Style_Aspects/generated.JPG)
 </span>
 </br>
 
