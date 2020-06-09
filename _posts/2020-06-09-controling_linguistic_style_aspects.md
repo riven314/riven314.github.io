@@ -54,4 +54,4 @@ Below is a snapshot of the generated reviews conditioned on a set of stylistic p
 1. [Ficler, J., & Goldberg, Y. (2017). Controlling Linguistic Style Aspects in Neural Language Generation. In Proc. Workshop on Stylistic Variation, pp. 94–104](https://arxiv.org/pdf/1707.02633.pdf)
 2. [Nitish Shirish Keskar, Bryan McCann, Lav R. Varshney, Caiming Xiong, and Richard Socher. 2019.
 Ctrl: A conditional transformer language model for
-controllable generation. ArXiv, abs/1909.05858](https://arxiv.org/pdf/1707.02633.pdf)
+controllable generation. ArXiv, abs/1909.05858](https://arxiv.org/pdf/1909.05858.pdf)
