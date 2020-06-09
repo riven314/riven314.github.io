@@ -2,7 +2,7 @@
 
 A controllable text generator is useful in many areas. It refers to a text generative model which enables user to control various level of attributes. Despite the usefulness, there are very limited literatures studying the problem. 
 
-Published in 2017, this paper is one of the highly cited work in the field. It has shown a promising result on text generation with multiple attributes controlled at the same time. Not oly that, the work has also shown that it could generalize well even in combinations of attributes that are unseen in training set. (it is a big deal because most data are skewed in particular set of attribute combinations, such finding means their work could probably generalize well on those kinds of data)
+Published in 2017, this paper is one of the highly cited work in the field. It has shown a promising result on text generation with multiple attributes controlled at the same time. Not oly that, the work has also shown that it could generalize well even in combinations of attributes that are unseen in training set. It is a big deal because most data are skewed in a particular regions of attribute combinations, such finding means their work could probably generalize well on those kinds of data.
 
 ## Problem Formulation
 
