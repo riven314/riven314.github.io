@@ -90,7 +90,7 @@ LDA assumes a corpus is made of a fixed number of latent topics, aka $\{z_i\}^{K
 
 To generate a document, LDA firstly assigns a distribution of latent topics for a document, aka $\theta_{D} = \{P(z_{1} \mid D), P(z_{2} \mid D), ..., P(z_{K} \mid D)\}$ where $K$ is the number of latent topics. The distribution can be either assigned by a user or estimated based on the characteristic of the document. With the latent topic distribution $\theta_{D}$, a topic is sampled for each (unobserved) word of the document. With a topic assigned to the (unobserved) word, we have a distribution of words conditional on the topic, aka $\phi_{z} = \{ P(w_{1} \mid z), P(w_{2} \mid z), ..., P(w_N \mid z) \}$ where $N$ is the size of vocabulary. Finally, we can sample a (observed) word from the distribution.
 
-Simply put, LDA model is trying to learn $\theta_{D}$ and $\phi_{Z}$. In inference, it characterize the comments of a post by a latent topic distribution $\theta_{D}$ and computes the style weight $w_{style}$ for its generated comment:
+In training, LDA model is trying to learn $\theta_{D}$ and $\phi_{Z}$. In inference, it characterize the comments of a post by a latent topic distribution $\theta_{D}$ and computes the style weight $w_{style}$ for its generated comment of the post:
 
 $$
 w^{j}_{style} = \sum^{K}_{k=1} {\theta^{k}_{D} \phi^{j}_{k}}, \text{ for the j-th word of the comment D}
