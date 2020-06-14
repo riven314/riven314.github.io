@@ -75,7 +75,7 @@ $w_{style}$ is the "style weight" from LDA model and $w_{style}$ undergoes a ele
 
 How do we get $w_{style}$ exactly? By a Latent Dirichlet Allocation (LDA) model! The next session wil briefly describe LDA model and how $w_{style}$ is obtained from it.
 
-## 3.1. Capturing Diversity with Latent Dirichlet Allocation
+## 3.2. Capturing Diversity with Latent Dirichlet Allocation
 $w_{style}$ is a distribution of words and such distribution is estimated by a model called Latent Dirichlet Allocation. It is a traditional machine learning model for unsupervised clustering and corpus generation.
 
 LDA framework models the generative process of a corpus and the generative process can best be summarized by the following diagram (borrowed from a [slide](https://docs.google.com/presentation/d/17vZ5kWGS8beROHHEKvXIcJN_d7KEBJ5TgAJCmKL1bkQ/edit#slide=id.g7ca89cf707_0_237)):
@@ -118,8 +118,6 @@ To demonstrate the generated comments by the proposed framework is more preferab
 ![results](/images/2020-06-10-Netizen_style_commenting/user_study.JPG)
 </span>
 <br/>
-
-
 
 ## 5. Final Thought
 In terms of the technicality, the paper does not mention a lot of details about how they train their image captioning network and how they do prediction with their LGDA model. For example, it is not clear on the loss function of the network. They also do not mention how the training handles the case when an image is mapped to multiple comments, which is typically not the setting of current image captioning task. As for LDA, it does not cover how a LDA model infer the per-comment topic distribution for a comment and how it learns the dirichlet distribution for topics. There may be a common practices to follow. I need a deeper look on it.
