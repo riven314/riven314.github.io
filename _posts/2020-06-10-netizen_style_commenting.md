@@ -1,5 +1,11 @@
 # [Paper Review] Netizen-Style Commenting on Fashion Photos: Dataset abd Diversity Measures
 
+<br/><br/>
+<span style="display:block;text-align:center">
+![data snapshots](/images/2020-06-10-Netizen_style_commenting/profile.JPG)
+</span>
+<br/>
+
 ## 1. Motivation
 Creating an engaging and human-like image caption with machine is a challenging but attractive problem.This paper offers a new angle to approach the problem. It is driven by a critical observation on the modern image captioning models. The authors states the critism towards modern image caption models right straight at the beginning of the abstract:
 
@@ -35,7 +41,7 @@ Besides NetiLook dataset, the authors also use Flickr30k for experiments. Below 
 </span>
 <br/>
 
-The presence of social media platform offers a tremendous opportunity for abundance of training data, but they are also noisy. The authors have made the following pre-processing steps to clean the data:
+The presence of social media platform offers a tremendous opportunity for abundance of training data, but they are also too noisy to used out-of-box. The authors have made the following pre-processing steps to clean the data:
 1. remove images of no comments
 2. filter sentences that are too long to reduce advertisement and make them more readable
 3. remove sentences that contain a word frequency that is less than five times in training set
@@ -71,6 +77,10 @@ How do we get $w_{style}$ exactly? By a Latent Dirichlet Allocation (LDA) model!
 
 ## 3.1. Capturing Diversity with Latent Dirichlet Allocation
 $w_{style}$ is a distribution of words and such distribution is estimated by a model called Latent Dirichlet Allocation. It is a traditional machine learning model that could do unsupervised clustering and corpus generation. It is modelling the generative process of a corpus (recall that a corpus is a collection of documents).
+
+The generative process of one corpus from a LDA model can best be summarized by the following diagram:
+
+<<INSERT DIAGRAM>>
 
 Due to limited length, I can't dive too deep on LDA model. There are many blogposts and videos explaining LDA. For details, you could refer to the resources I attached in the reference session.
 
