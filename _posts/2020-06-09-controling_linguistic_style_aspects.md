@@ -4,7 +4,7 @@ A controllable text generator is useful in many areas. It refers to a text gener
 
 Published in 2017, this paper is one of the highly cited work in the field. It has shown a promising result on text generation with multiple attributes controlled at the same time. Not oly that, the work has also shown that it could generalize well even in combinations of attributes that are unseen in training set. It is a big deal because most data are skewed in a particular regions of attribute combinations, such finding means their work could probably generalize well on those kinds of data.
 
-## Problem Formulation
+## 1. Problem Formulation
 
 The paper formulate the problem as learning a conditional language model. A conditional language model learns a probability distribution for a sequence of words. More formally, a conditional language model is to learn $P(w\_{1},...,w\_{n} \mid c) = \prod^{n}\_{t=1} P(w\_{t} \mid w\_{1},...,w\_{t-1},c)$ , where $c$ is a vector of attributes where we want to control, and $w_i$ is the word at timestep $i$. In this work, they concatenate $c$ with the input vector in order to factor in the conditioning of attributes.
 
@@ -14,7 +14,7 @@ The authors demonstrate their work with LSTM model on a movie review dataset and
 
 _**In the paper, the authors refer attributes as "stylistic properties". For naming consistency, I would also denote attributes as "stylistic properties" in the following sessions._
 
-## Dataset
+## 2. Dataset
 
 The dataset they use is a huge corpus of movie reviews from Rotten Tomatoes website. The dataset contains meta-data for each raw text of movie review. 
 
@@ -34,7 +34,7 @@ Their final dataset includes 2,773,435 review sentences with each sentence label
 ![properties-distribution](/images/2020-06-09-Controling_Linguistic_Style_Aspects/attribute_distribution.JPG)
 <br/><br/>
 
-## Result
+## 3. Result
 
 It is tricky to evaluate text generation task. One common metrics is perplexity. It measures how well a language model is fitted to a test set (lower the perplexity the better). The work compares the pexplexity of their conditional language model against unconditional one ans show that it has a better fit than the unconditional one:
 <br/><br/>
@@ -50,7 +50,7 @@ Below is a snapshot of the generated reviews conditioned on a set of stylistic p
 </span>
 <br/>
 
-## Reference
+## 4. Reference
 1. [Ficler, J., & Goldberg, Y. (2017). Controlling Linguistic Style Aspects in Neural Language Generation. In Proc. Workshop on Stylistic Variation, pp. 94–104](https://arxiv.org/pdf/1707.02633.pdf)
 2. [Nitish Shirish Keskar, Bryan McCann, Lav R. Varshney, Caiming Xiong, and Richard Socher. 2019.
 Ctrl: A conditional transformer language model for
