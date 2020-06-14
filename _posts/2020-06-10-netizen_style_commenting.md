@@ -47,9 +47,9 @@ The presence of social media platform offers a tremendous opportunity for abunda
 3. remove sentences that contain a word frequency that is less than five times in training set
 
 ## 3. Problem Formulation
-The framework they proposed is pretty simple to understand and straight-forward to implement. Essentially, the framework is applicable to most image captioning networks and there is no change in training phase. 
+The framework they proposed is pretty simple to understand and straight-forward to implement. Essentially, the framework starts with training a generic image captioning network with no change in the training phase. To enable the image captioning network to generate human-like vivid comments, they simply train the network with NetiLook or Flickr30k dataset. However, the generated comments/ captions with such trained network is monotonic and lack of diversity. 
 
-What is new is an additional standalone module that fused with model output in inference stage. The module is able to estimate the latent topics of a post (we will explain the part about latent topics later) and output a distribution of words best fit for the topics (the paper notates the distribution as "style weight"). The distribution is learned by a LDA model. This distribution controls the network to output diverse comments with respect to an image. The picture below summarizes an overview of the framework:
+To introduce diversity of the generated sentences, they introduce an additional standalone module that fused with model output in inference stage to give an adjusted distribution of words. A sentence is then generated with respect to the adjusted distribution of words. The module is able to estimate the latent topics of a post based on its comments (we will explain the part about latent topics later) and output a distribution of words best fit for the topics (the paper notates the distribution as "style weight"). This distribution controls the network to output diverse comments with respect to an image and its related latent topics. The picture below summarizes an overview of the framework:
 
 <br/><br/>
 <span style="display:block;text-align:center">
@@ -76,27 +76,70 @@ $w_{style}$ is the "style weight" from LDA model and $w_{style}$ undergoes a ele
 How do we get $w_{style}$ exactly? By a Latent Dirichlet Allocation (LDA) model! The next session wil briefly describe LDA model and how $w_{style}$ is obtained from it.
 
 ## 3.1. Capturing Diversity with Latent Dirichlet Allocation
-$w_{style}$ is a distribution of words and such distribution is estimated by a model called Latent Dirichlet Allocation. It is a traditional machine learning model that could do unsupervised clustering and corpus generation. It is modelling the generative process of a corpus (recall that a corpus is a collection of documents).
+$w_{style}$ is a distribution of words and such distribution is estimated by a model called Latent Dirichlet Allocation. It is a traditional machine learning model for unsupervised clustering and corpus generation.
 
-The generative process of one corpus from a LDA model can best be summarized by the following diagram:
+LDA framework models the generative process of a corpus and the generative process can best be summarized by the following diagram (borrowed from a [slide](https://docs.google.com/presentation/d/17vZ5kWGS8beROHHEKvXIcJN_d7KEBJ5TgAJCmKL1bkQ/edit#slide=id.g7ca89cf707_0_237)):
 
-<<INSERT DIAGRAM>>
+<br/><br/>
+<span style="display:block;text-align:center">
+![lda diagram](/images/2020-06-10-Netizen_style_commenting/lda_explain.png)
+</span>
+<br/>
+
+LDA assumes a corpus is made of a fixed number of latent topics, aka $\{z_i\}^{K}_{i=1}$. We call it latent because those topics may or may not be interpretable. Those latent topics may not even be observable. It further assumes a document is characterized by a distribution of latent topics (e.g. document A is 70% of sports sector and 30% of food sector), and a topic is characterized by a distribution of words (e.g. sports topic has high occurence of "performance"). 
+
+To generate a document, LDA firstly assigns a distribution of latent topics for a document, aka $\theta_{D} = \{P(z_{1} \mid D), P(z_{2} \mid D), ..., P(z_{K} \mid D)\}$ where $K$ is the number of latent topics. The distribution can be either assigned by a user or estimated based on the characteristic of the document. With the latent topic distribution $\theta_{D}$, a topic is sampled for each (unobserved) word of the document. With a topic assigned to the (unobserved) word, we have a distribution of words conditional on the topic, aka $\phi_{z} = \{ P(w_{1} \mid z), P(w_{2} \mid z), ..., P(w_N \mid z) \}$ where $N$ is the size of vocabulary. Finally, we can sample a (observed) word from the distribution.
+
+Simply put, LDA model is trying to learn $\theta_{D}$ and $\phi_{Z}$. In inference, it characterize the comments of a post by a latent topic distribution $\theta_{D}$ and computes the style weight $w_{style}$ for its generated comment:
+
+$$
+w^{j}_{style} = \sum^{K}_{k=1} {\theta^{k}_{D} \phi^{j}_{k}}, \text{ for the j-th word of the comment D}
+$$
 
 Due to limited length, I can't dive too deep on LDA model. There are many blogposts and videos explaining LDA. For details, you could refer to the resources I attached in the reference session.
 
 ## 4. Results
+Results presented by the work is encouraging:
+
+<br/><br/>
+<span style="display:block;text-align:center">
+![results](/images/2020-06-10-Netizen_style_commenting/results.JPG)
+</span>
+<br/>
+
+The generated comments in last row are the results of their proposed framework. $NC$ and $Attention$ are the image captioning networks they consider. $NSC_{NC}$ are $NC$ model fused with style weight in post-processing stage. 
+
+Undoubtedly, the results are not perfect. Even though they give comments of higher diversity, you could notice it observes a certain pattern here. For example, most of generated comments start with "I love". It probably reflects a dominant pattern shown in training data.
+
+To demonstrate the generated comments by the proposed framework is more preferable by human. They ask users to rank a human-made comment and the generated comments from $NC$, $Attention$ and $NSC_{NC}$ when given an image. Below is a ranking statistics of the user study, which looks encouraging! 
+
+<br/><br/>
+<span style="display:block;text-align:center">
+![results](/images/2020-06-10-Netizen_style_commenting/user_study.JPG)
+</span>
+<br/>
+
 
 
 ## 5. Final Thought
 In terms of the technicality, the paper does not mention a lot of details about how they train their image captioning network and how they do prediction with their LGDA model. For example, it is not clear on the loss function of the network. They also do not mention how the training handles the case when an image is mapped to multiple comments, which is typically not the setting of current image captioning task. As for LDA, it does not cover how a LDA model infer the per-comment topic distribution for a comment and how it learns the dirichlet distribution for topics. There may be a common practices to follow. I need a deeper look on it.
 
-In terms of the model they proposed, it is essentially a generic image captioning network with a LDA module as a plug-in. The network learns vivid and human-like sentences from realistic dataset (such as NetiLook) and it achieves diversity by controlling the latent distribution of its standalone LDA module. Such integration is both creative and surprising. I feel really surprised the module is simply plugged on top of an image captioning network but it gives such an impressive results. Notice the LDA module is separately learned from the network. The work serves as a good example of how traditional machine learning framework could work together with deep learning network.
+In terms of the model they proposed, the "vanilla" network learns vivid and human-like sentences from realistic dataset (such as NetiLook) and it achieves diversity by controlling the latent parameters of its standalone LDA module. Such integration is both creative and surprising. I feel really surprised the module is simply plugged on top of an image captioning network but it gives such an impressive results. Notice the LDA module is separately learned from the network. The work serves as a good example of how traditional machine learning framework could work together with deep learning network.
+
+One more insight this paper offers is that we could control text generation by simply manipulating the distribution of word in post-processing stage. Usually we want to treat the attributes we want to control as something learnable in the network, as a result we would put those factor/ data as model input. This paper offers us a much simpler approach for doing this. Instead of taking style weight as a learnable parameters inside the network, this work simply manipulates the distribution of word by style weight which is learned by a LDA model. I believe the idea can be further extended to ways other than LDA, a simpler way such as a manual weighing scheme to penalise or encourage certain words, and more complex way such as a weight that depends on both latent topics and timestep. I look forward to the further works related to this paper.
 
 ## 6. Reference
 1. [Wen Hua Lin, Kuan-Ting Chen, Hung Yueh Chiang, and
 Winston Hsu. Netizen-Style Commenting on Fashion Photos: Dataset and Diversity Measures. In arXiv preprint, 2018.](https://dl.acm.org/doi/pdf/10.1145/3184558.3186354)
-2. [[Youtube] Topic Models: Introduction (13a)](https://www.youtube.com/watch?v=fCmIceNqVog)
-3. [[Medium] Intuitive Guide to Latent Dirichlet Allocation](https://towardsdatascience.com/light-on-math-machine-learning-intuitive-guide-to-latent-dirichlet-allocation-437c81220158)
-4. [Topic Modeling with Gensim (Python)](https://www.machinelearningplus.com/nlp/topic-modeling-gensim-python/?fbclid=IwAR0x8BYnSAzsUq99sS3HmiGB9eWx4YsKN4QZIGr3rnGNRQ74hTlKMnFDP4k)
-5. [Maximum Likelihood Estimation of Dirichlet Distribution
+2. [Oriol Vinyals, Alexander Toshev, Samy Bengio, and Dumitru Erhan. 2015. Show
+and tell: A neural image caption generator. In Proceedings of the IEEE Conference
+on Computer Vision and Pattern Recognition. 3156–3164.](https://arxiv.org/abs/1411.4555)
+3. [Kelvin Xu, Jimmy Ba, Ryan Kiros, Kyunghyun Cho, Aaron C Courville, Ruslan
+Salakhutdinov, Richard S Zemel, and Yoshua Bengio. 2015. Show, Attend and
+Tell: Neural Image Caption Generation with Visual Attention.. In ICML, Vol. 14.
+77–81.](https://arxiv.org/abs/1502.03044)
+4. [[Youtube] Topic Models: Introduction (13a)](https://www.youtube.com/watch?v=fCmIceNqVog)
+5. [[Medium] Intuitive Guide to Latent Dirichlet Allocation](https://towardsdatascience.com/light-on-math-machine-learning-intuitive-guide-to-latent-dirichlet-allocation-437c81220158)
+6. [Topic Modeling with Gensim (Python)](https://www.machinelearningplus.com/nlp/topic-modeling-gensim-python/?fbclid=IwAR0x8BYnSAzsUq99sS3HmiGB9eWx4YsKN4QZIGr3rnGNRQ74hTlKMnFDP4k)
+7. [Maximum Likelihood Estimation of Dirichlet Distribution
 Parameters](https://gitee.com/migrant/spark-ml-source-analysis/raw/master/%E8%81%9A%E7%B1%BB/LDA/docs/dirichlet.pdf)
