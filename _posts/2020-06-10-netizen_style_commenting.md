@@ -111,7 +111,7 @@ The generated comments in last row are the results of their proposed framework. 
 
 Undoubtedly, the results are not perfect. Even though they give comments of higher diversity, you could notice it observes a certain pattern here. For example, most of generated comments start with "I love". It probably reflects a dominant pattern shown in training data.
 
-To demonstrate the generated comments by the proposed framework is more preferable by human. They ask users to rank a human-made comment and the generated comments from $NC$, $Attention$ and $NSC_{NC}$ when given an image. Below is a ranking statistics of the user study, which looks encouraging! 
+To demonstrate the generated comments by the proposed framework is more preferable by human. They ask users to rank a human-made comment and the generated comments from $NC$, $Attention$ and $NSC_{NC}$ when given an image. User can assign rank 1-4 to a sentence. Below is a ranking statistics of the user study. The proposed received a high rate of rank 1 assignment. It looks encouraging! 
 
 <br/><br/>
 <span style="display:block;text-align:center">
