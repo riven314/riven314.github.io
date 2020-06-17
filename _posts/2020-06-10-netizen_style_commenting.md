@@ -1,4 +1,4 @@
-# [Paper Review] Netizen-Style Commenting on Fashion Photos: Dataset abd Diversity Measures
+# [Paper Review] Netizen-Style Commenting on Fashion Photos: Dataset and Diversity Measures
 
 <br/><br/>
 <span style="display:block;text-align:center">
